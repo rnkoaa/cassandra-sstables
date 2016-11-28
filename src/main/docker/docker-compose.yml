@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+  cassandra:
+    image: cassandra:3.9
+    container_name: cassandra_dev
+    mem_limit: 2g
+    ports:
+      - '7191:7191'
+      - '7000:7000'
+      - '7001:7001'
+      - '9160:9160'
+      - '9042:9042'
+    environment:
+      - 'CASSANDRA_BROADCAST_ADDRESS=192.168.99.100'
+#    volumes:
+#      - "~/docker/cassandra:/var/lib/cassandra"
+    networks:
+      - infrastructure
+
+networks:
+  infrastructure:
+    driver: bridge

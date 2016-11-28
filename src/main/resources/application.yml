@@ -1,0 +1,6 @@
+spring:
+  data:
+    cassandra:
+      cluster-name: "spring-sstable"
+      contact-points: "192.168.99.100"
+      keyspace-name: "spring-sstable"

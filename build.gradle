@@ -1,0 +1,140 @@
+/*
+ * Copyright 2016: Thomson Reuters. All Rights Reserved.
+ * Proprietary and Confidential information of Thomson Reuters. Disclosure, Use or
+ * Reproduction without the written authorization of Thomson Reuters is prohibited.
+ */
+
+
+group 'com.richard.cassandra.sstable'
+version '1.0-SNAPSHOT'
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+        maven { url 'http://repo.spring.io/plugins-release' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.7'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+apply plugin: 'idea'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-maven'
+apply plugin: 'propdeps-idea'
+apply plugin: 'propdeps-eclipse'
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+def cassandra_version = '2.1.12'
+def supercsv_version = '2.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //optional "org.springframework.boot:spring-boot-configuration-processor"
+
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile("org.springframework.boot:spring-boot-devtools")
+
+    compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-actuator:${springBootVersion}")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
+
+    compile("com.google.guava:guava:18.0")
+
+    compile("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:1.2.8")
+
+    compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:${jacksonVersion}")
+    compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}")
+
+    compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'
+
+
+    compile group: 'com.datastax.cassandra', name: 'cassandra-driver-core', version: '3.1.2'
+    compile group: 'com.datastax.cassandra', name: 'cassandra-driver-mapping', version: '3.1.2'
+    compile group: 'com.datastax.cassandra', name: 'cassandra-driver-extras', version: '3.1.2'
+    compile group: 'com.datastax.cassandra', name: 'cassandra-driver-dse', version: '3.0.0-rc1'
+
+    compile group: 'org.apache.cassandra', name: 'cassandra-all', version: '3.9'
+    compile group: 'net.sf.supercsv', name: 'super-csv', version: supercsv_version
+
+
+
+    compile "org.apache.commons:commons-lang3:3.4"
+
+    compile "ch.qos.logback:logback-classic:1.1.7"
+    compile "org.slf4j:jcl-over-slf4j:1.7.12"
+
+
+    //For Concurrent requests.
+    compile("com.typesafe.akka:akka-actor_2.11:2.4.14")
+
+    testCompile("org.springframework.boot:spring-boot-starter-test") {
+        exclude module: "junit:junit"
+    }
+    testCompile('org.assertj:assertj-core:3.1.0')
+    testCompile('com.jayway.jsonpath:json-path-assert:2.0.0')
+    testCompile("com.jayway.jsonpath:json-path:2.0.0") {
+        exclude module: "com.fasterxml.jackson.core"
+    }
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+springBoot {
+    executable = true
+}
+
+compileJava.dependsOn(processResources)
+
+/*
+war {
+    // Add warLib dependency configuration
+    classpath configurations.warLib
+
+    // We remove all duplicate files
+    // with this assignment.
+    // geFiles() metho
+    d return a unique
+    // set of File objects, removing
+    // any duplicates from configurations
+    // added by classpath() method.
+    classpath = classpath.files
+    archiveName = "ArtifactMigrationService.war"
+}
+*/
+/*distZip {
+    doLast {
+        file("$destinationDir/$archiveName").renameTo("$destinationDir/ArtifactMigrationService.war")
+    }
+}*/
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.2.1'
+}
+
+/*task run(type:JavaExec) {
+    main = 'bulkload.BulkLoad'
+    classpath = sourceSets.main.runtimeClasspath
+    args 'ORCL','YHOO','GOOG'
+}*/
+
+eclipse {
+    classpath {
+        containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+        containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+    }
+}
+
